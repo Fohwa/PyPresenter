@@ -54,9 +54,13 @@ def send(prefix, message): # helper function to send messages to the render.py
     print(f"[+] {prefix} redirected")
 
 def slide(): # the slide mode makes it easy to switch between text
-    while True:
-        ui = input("$ ")
-        if ui == "stop": break
-        send("txt", ui)
+    location = input("please insert the file name: ")
 
-        #testing
+    try:
+     f = open(os.path.join('lyrics/', location))
+     for x in f:
+        send("txt", x)
+        ui = input()
+        if ui == "stop": break
+    except: print("Could not open file")
+
