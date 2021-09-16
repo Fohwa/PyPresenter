@@ -58,3 +58,5 @@ def slide(): # the slide mode makes it easy to switch between text
         ui = input("$ ")
         if ui == "stop": break
         send("txt", ui)
+
+        #testing
