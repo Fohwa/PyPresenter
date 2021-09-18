@@ -40,8 +40,10 @@ while True:
         except: print("[x] Error: Could not restart Window; Try 'out 1'")
     elif ui[:4] == "cmd ": # redirects commands to render
         send("cmd", ui.removeprefix("cmd "))
+        print("[+] command redirected")
     # send text to Window
     elif ui[:4] == "txt ": # redirects commands to render
         send("txt", ui.removeprefix("txt "))
+        print("[+] text redirected")
     else:
         print("[x] Error: Command not found")
