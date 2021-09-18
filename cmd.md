@@ -26,3 +26,15 @@ custom resolutions work in progress
 
 ## cmd
 commands related to the rendering, get executed by render.pyw
+
+
+# Slidemode
+slidemode is entered by typing "slide"
+enter your file name from the lyrics folder
+
+use space or right arrow to get to the next slide
+f - clear text
+left - go back
+
+WIP:
+number - jump slides

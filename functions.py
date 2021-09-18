@@ -1,3 +1,4 @@
+from pynput.keyboard import Key, Listener
 import socket
 import os
 import threading
@@ -51,16 +52,57 @@ def send(prefix, message): # helper function to send messages to the render.py
     line = "O: " + prefix + u"\u0352" + message + u"\u0352"
     try: client_socket.send(line.encode())
     except: print("[x] Error: Could not talk to Window; Try 'out 1'")
-    print(f"[+] {prefix} redirected")
 
 def slide(): # the slide mode makes it easy to switch between text
     location = input("please insert the file name: ")
 
     try:
-     f = open(os.path.join('lyrics/', location))
-     for x in f:
-        send("txt", x)
-        ui = input()
-        if ui == "stop": break
+     # open file with lyrics
+     f = open(os.path.join('lyrics/', location + ".txt"))
+     
+     global lyrics
+     lyrics = f.read().splitlines() #puts the file into an array
+     global line
+     line = 0
+     GoNextSlide()
+     line += 1
+     KeyLog()
+
     except: print("Could not open file")
+
+def on_press(key):
+
+    global line
+    if key == Key.space: GoNextSlide(); line += 1
+    if key == Key.right: GoNextSlide(); line += 1
+    if key == Key.esc: print("should stop now"), exit()
+    #TODO: make these buttons work
+    #if key == "f": print("F"); send("txt", "")
+    #if key == Key.left: line -= 2; GoNextSlide; line += 1
+    else: pass
+    
+def KeyLog():
+# Collect events until released
+    with Listener(
+           on_press=on_press,
+           ) as listener:
+        listener.join()
+
+def GoNextSlide():
+    # swich text from next to this slide
+    global line, lyrics
+    thisSlide = lyrics[line]
+    # save text of next slide to string
+    
+    try:
+        nextSlide = lyrics[line + 1]
+    except:
+        print("Song ended")
+        send("txt", "")
+        exit()
+    # print current and next Slide text
+    print(f"\n-------------------------------------------------------<{line + 1}/{len(lyrics)}>")
+    print("Current: | " + thisSlide)
+    print("Next:    | " + nextSlide)
+    send("txt", thisSlide)
 
