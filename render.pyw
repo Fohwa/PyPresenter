@@ -8,25 +8,6 @@ pygame.font.init()
 # Display hight final is full screen, for debugging smaller
 # Reading this info from /config/resolution.dat to change it
 
-f = open(os.path.join('config', 'resolution.dat'))
-resolution = f.readline()
-x = y = ""
-isY = False
-for i in resolution:
-    if i == ":": isY = True
-    else:
-        if isY: y += i
-        else: x += i
-
-
-Width = int(x)
-Height = int(y)
-
-# init the display
-Win = pygame.display.set_mode((Width, Height))
-pygame.display.toggle_fullscreen
-pygame.display.set_caption("PyPresenter")
-
 # Colors ; just yanked some from other project
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -36,15 +17,42 @@ YELLOW = (255, 255, 0)
 # Font styles
 NormalFont = pygame.font.SysFont('comicsans', 100)
 
-# Some important constants
-Fps = 10
 
-# function to load Assets for background
-#def loadAsset(name): # for now the location of the Assets folder is hard coded
-Background = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'back.jpg')), (Width, Height))
 
-# needs to be changed to be able to use different styles
+def init():
+    f = open(os.path.join('config', 'resolution.dat'))
+    resolution = f.readline()
+    x = y = ""
+    isY = False
+    for i in resolution:
+        if i == ":": isY = True
+        else:
+            if isY: y += i
+            else: x += i
+    
+    global Width, Height
+    Width = int(x)
+    Height = int(y)
+
+    # init the display
+    global Win
+    Win = pygame.display.set_mode((Width, Height))
+    pygame.display.toggle_fullscreen
+    pygame.display.set_caption("PyPresenter")
+
+    # Some important constants
+    global Fps
+    Fps = 10
+
+    # function to load Assets for background
+    #def loadAsset(name): # for now the location of the Assets folder is hard coded
+    global Background
+    Background = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'back.jpg')), (Width, Height))
+
+    # needs to be changed to be able to use different styles
 def drawWindow(text):
+    global Win
+    global Background
     Win.blit(Background, (0,0))
     lyric = NormalFont.render(text, 1, WHITE)
     Win.blit(lyric, (Width//2 - lyric.get_width()//2, Height//2 - lyric.get_height()//2))
@@ -70,6 +78,7 @@ t.daemon = True # daemon thread ends, when main ends
 t.start()
 
 # main function
+init()
 clock = pygame.time.Clock()
 drawWindow("") # render it ones at the start
 global text
