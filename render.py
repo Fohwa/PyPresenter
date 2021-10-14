@@ -3,7 +3,6 @@ import os
 import socket
 from threading import Thread
 import time
-
 from util import server
 
 print("\nRender started")
@@ -19,7 +18,6 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 Fps = 10
-PygameRunning = False
 
 # Font styles
 NormalFont = pygame.font.SysFont('comicsans', 100)
@@ -95,7 +93,7 @@ def listen_for_messages(): # thread
         # CMDs: "txt": output line in TEXT to screen
         #       
 
-        print(line)
+        #print(line)
         text = ""
         if line[:7] == "O: txt" + u"\u0352":
             isLine = False
