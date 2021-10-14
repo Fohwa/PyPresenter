@@ -1,9 +1,7 @@
 import pygame
 import os
-import socket
 from threading import Thread
-import time
-from util import server
+from util import color, connection
 
 print("\nRender started")
 
@@ -12,23 +10,10 @@ pygame.font.init()
 # Display hight final is full screen, for debugging smaller
 # Reading this info from /config/resolution.dat to change it
 
-# Colors ; just yanked some from other project
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-YELLOW = (255, 255, 0)
 Fps = 10
 
 # Font styles
 NormalFont = pygame.font.SysFont('comicsans', 100)
-
-# socket connection
-# server's IP address
-# if the server is not on this machine, 
-# put the private (network) IP address (e.g 192.168.1.2)
-SERVER_HOST = "127.0.0.1"
-SERVER_PORT = 1234 # server's port
-separator_token = "<SEP>" # we will use this to separate the client name & message
 
 
 def init():
@@ -62,31 +47,18 @@ def drawWindow(text):
     global Win
     global Background
     Win.blit(Background, (0,0))
-    lyric = NormalFont.render(text, 1, WHITE)
+    lyric = NormalFont.render(text, 1, color.WHITE)
     Win.blit(lyric, (Width//2 - lyric.get_width()//2, Height//2 - lyric.get_height()//2))
 
     pygame.display.update()
 
-# main function
-print("\nRender: main function started")
-# initialize TCP socket
-s = socket.socket()
-print(f"CLIENT: [*] Connecting to {SERVER_HOST}:{SERVER_PORT}...")
-# connect to the server
-connected = False
-while not connected:
-    try: 
-        s.connect((SERVER_HOST, SERVER_PORT))
-        print("CLIENT: [+] Connected.")
-        connected = True
-    except:
-        print("Server not found. Trying again...")
-        time.sleep(5)
+client1 = connection.Client()
+client1.connect()
 
 
 def listen_for_messages(): # thread
     while True:
-        line = s.recv(1024).decode()
+        line = client1.receive()
         # some console level interpretation of text:
         # I am using letters at the beginning to indicate, what to do with the message
         # standart syntax: "O: CMD" + u"\u0352" + TEXT + "+ u"\u0352"
@@ -141,6 +113,6 @@ while True:
 
            except:
             exit()
-           server.closeSocket()
+           client1.close()
    
     except: pass

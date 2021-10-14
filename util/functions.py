@@ -1,6 +1,5 @@
 from pynput.keyboard import Key, Listener
 import os
-from util import server
 
 
 # This funciton starts the render.py; this must happen in a function.
@@ -10,25 +9,8 @@ from util import server
 # this is a really bad way of doing it, but it works for now
 # possible back and forth communication for render and operator could make this possible
 # without a file
-def setResolution(res):
-    f = open(os.path.join('config', 'resolution.dat'), "w")
-    f.write(res)
-    f.close()
 
-
-def killWindow():
-    try:
-        line = "O: cmd" + u"\u0352" + "stop" + u"\u0352"
-        send(line)
-    except:
-        print("[x] Error: Could not close window. Propaly already closed")
-
-def send(prefix, message): # helper function to send messages to the render.py
-    line = "O: " + prefix + u"\u0352" + message + u"\u0352"
-    try:
-        server.sendClient(line)
-    except: print("[x] Error: Could not talk to Window; Try 'out 1'")
-
+'''
 def slide(): # the slide mode makes it easy to switch between text
     location = input("please insert the file name: ")
 
@@ -82,3 +64,4 @@ def GoNextSlide():
     print("Next:    | " + nextSlide)
     send("txt", thisSlide)
 
+'''
