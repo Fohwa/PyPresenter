@@ -5,22 +5,21 @@ def send(prefix, message):
     line = "O: " + prefix + u"\u0352" + message + u"\u0352"
     try:
         client.sendAll(line)
-    except: print("[x] Error: Could not talk to Window; Try 'out 1'")
+    except: print("[x] Error: Could not talk to Window; start renderer")
 
 # starting client presenting window in another thread
 # interface with user to get info to display
 print("PyPresenter [Version 0.0.1]")
 print("© All rights reserved.")
-print("To start the window: 'start'\n")
+print("\n\n")
+client = connection.Server()
+client.start()
+ 
 while True:
     ui = input("Ø ") # spacing char before every argument of the user
     if ui == "stop":
         client.sendAll("O: cmd" + u"\u0352" + "stop" + u"\u0352")
         exit()
-    elif ui == "start": # starts output
-        print("[@] first launch:")
-        client = connection.Server()
-        client.start()
     elif ui == "out": send("cmd", "start")
     elif ui == "win stop" or ui == "out 0":
         try: client.sendAll("O: cmd" + u"\u0352" + "stop" + u"\u0352") 

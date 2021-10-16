@@ -1,56 +1,46 @@
 import pygame
 import os
 from threading import Thread
-from util import color, connection
+from util import helper, connection, presenter
 
 print("\nRender started")
 
-pygame.font.init()
+# pygame.font.init()
 
 # Display hight final is full screen, for debugging smaller
 # Reading this info from /config/resolution.dat to change it
 
 Fps = 10
 
-# Font styles
-NormalFont = pygame.font.SysFont('comicsans', 100)
+# # Font styles
+# NormalFont = pygame.font.SysFont('comicsans', 100)
 
 
-def init():
-    f = open(os.path.join('config', 'resolution.dat'))
-    resolution = f.readline()
-    x = y = ""
-    isY = False
-    for i in resolution:
-        if i == ":": isY = True
-        else:
-            if isY: y += i
-            else: x += i
+# def init():
     
-    global Width, Height
-    Width = int(x)
-    Height = int(y)
+#     global Width, Height
+#     [Width, Height] = presenter.resolution()
 
-    # init the display
-    global Win
-    Win = pygame.display.set_mode((Width, Height))
-    pygame.display.toggle_fullscreen
-    pygame.display.set_caption("PyPresenter")
+#     # init the display
+#     global Win
+#     Win = pygame.display.set_mode((Width, Height))
+#     pygame.display.toggle_fullscreen
+#     pygame.display.set_caption("PyPresenter")
 
-    # function to load Assets for background
-    #def loadAsset(name): # for now the location of the Assets folder is hard coded
-    global Background
-    Background = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'back.jpg')), (Width, Height))
+#     # function to load Assets for background
+#     #def loadAsset(name): # for now the location of the Assets folder is hard coded
+#     global Background
+#     Background = pygame.transform.scale(pygame.image.load(os.path.join('Assets', 'back.jpg')), (Width, Height))
 
-    # needs to be changed to be able to use different styles
-def drawWindow(text):
-    global Win
-    global Background
-    Win.blit(Background, (0,0))
-    lyric = NormalFont.render(text, 1, color.WHITE)
-    Win.blit(lyric, (Width//2 - lyric.get_width()//2, Height//2 - lyric.get_height()//2))
+#     # needs to be changed to be able to use different styles
+# def drawWindow(text):
+#     global Win
+#     global Background
+#     Win.blit(Background, (0,0))
+#     lyric = NormalFont.render(text, 1, helper.WHITE)
+#     Win.blit(lyric, (Width//2 - lyric.get_width()//2, Height//2 - lyric.get_height()//2))
 
-    pygame.display.update()
+#     pygame.display.update()
 
 client1 = connection.Client()
 client1.connect()
@@ -58,21 +48,20 @@ client1.connect()
 
 def listen_for_messages(): # thread
     while True:
-        line = client1.receive()
+        line = client1.s.recv(1024).decode()
         # some console level interpretation of text:
         # I am using letters at the beginning to indicate, what to do with the message
         # standart syntax: "O: CMD" + u"\u0352" + TEXT + "+ u"\u0352"
         # CMDs: "txt": output line in TEXT to screen
         #       
 
-        #print(line)
         text = ""
         if line[:7] == "O: txt" + u"\u0352":
             isLine = False
             for i in line:
                 if i == u"\u0352": isLine = True
                 elif isLine: text += i
-            drawWindow(text)
+            window.update(text)
         elif line[:7] == "O: cmd" + u"\u0352":
             isLine = False
             for i in line:
@@ -83,8 +72,10 @@ def listen_for_messages(): # thread
             if text == "stop": pygame.quit()
             elif text == "start":
                 print("Render: start to render")
-                init()
-                drawWindow("")
+                #init()
+                window = presenter.Window()
+                window.changeBackground()
+                window.update("")
 
 # make a thread that listens for messages to this client & print them
 t = Thread(target=listen_for_messages)
