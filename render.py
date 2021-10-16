@@ -1,7 +1,7 @@
 import pygame
 import os
 from threading import Thread
-from util import color, connection
+from util import helper, connection
 
 print("\nRender started")
 
@@ -47,7 +47,7 @@ def drawWindow(text):
     global Win
     global Background
     Win.blit(Background, (0,0))
-    lyric = NormalFont.render(text, 1, color.WHITE)
+    lyric = NormalFont.render(text, 1, helper.WHITE)
     Win.blit(lyric, (Width//2 - lyric.get_width()//2, Height//2 - lyric.get_height()//2))
 
     pygame.display.update()
