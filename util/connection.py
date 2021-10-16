@@ -31,13 +31,6 @@ class Client:
                 print("Server not found. Trying again...")
                 sleep(5)
 
-    def receive(self):
-        return self.s.recv(1024).decode()
-
-    def close(self):
-        self.s.close()
-
-
 
 class Server:
     def __init__(self):
@@ -53,14 +46,6 @@ class Server:
         self.s.listen(5)
 
         print(f"[*] TCP Socket initialised; Listening as {self.SERVER_HOST}:{self.SERVER_PORT}")
-        if input("start Render? [y/n] ") == "y":
-        
-            # start a thread
-            x = Thread(target=os.system("python render.py"), name="render")
-            # make the thread daemon so it ends whenever the main thread ends
-            x.daemon = True
-            # start the thread
-            x.start()
 
         self.clientSocket = None
         self.clientSockets = set()
