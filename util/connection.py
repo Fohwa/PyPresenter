@@ -17,7 +17,6 @@ class Client:
         self.s = socket.socket()
 
     
-    
     def connect(self):
         print(f"CLIENT: [*] Connecting to {self.SERVER_HOST}:{self.SERVER_PORT}...")
         # connect to the server
@@ -29,7 +28,11 @@ class Client:
                 connected = True
             except:
                 print("Server not found. Trying again...")
-                sleep(5)
+                sleep(1)
+
+    
+    def close(self):
+        self.s.close()
 
 
 class Server:
