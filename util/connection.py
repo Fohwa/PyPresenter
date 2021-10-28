@@ -72,10 +72,13 @@ class Server:
         t.start()
  
 
-    def sendAll(self, line): #pre sendClient()
-        for cs in self.clientSockets:
-            # send messages to all clients
-            cs.send(line.encode())      
+    def send(self, prefix, message):
+        line = "O: " + prefix + u"\u0352" + message + u"\u0352"
+        try:
+            for cs in self.clientSockets:
+                # send messages to all clients
+                cs.send(line.encode())
+        except: print("[x] Error: Could not talk to Window; start renderer")
 
     def info(self): #pre infoSocket()
         print("Info about the clients connected")

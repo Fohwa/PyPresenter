@@ -1,17 +1,12 @@
 import os
 from util import functions, connection, helper
 
-def send(prefix, message):
-    line = "O: " + prefix + u"\u0352" + message + u"\u0352"
-    try:
-        client.sendAll(line)
-    except: print("[x] Error: Could not talk to Window; start renderer")
-
 # starting client presenting window in another thread
 # interface with user to get info to display
 print("PyPresenter [Version 0.0.1]")
 print("© All rights reserved.")
 print("\n\n")
+
 client = connection.Server()
 client.start()
  
@@ -20,7 +15,6 @@ while True:
     if ui == "stop":
         client.sendAll("O: cmd" + u"\u0352" + "stop" + u"\u0352")
         exit()
-    elif ui == "out": send("cmd", "start")
     elif ui == "win stop" or ui == "out 0":
         try: client.sendAll("O: cmd" + u"\u0352" + "stop" + u"\u0352") 
         except: print("[x] Error: Could not restart Window; Try 'start'")#closeSocket()
@@ -41,11 +35,11 @@ while True:
         except: print("Error: No info")
 
     elif ui[:4] == "cmd ": # redirects commands to render
-        send("cmd", ui.removeprefix("cmd "))
+        client.send("cmd", ui.removeprefix("cmd "))
         print("[+] command redirected")
     # send text to Window
     elif ui[:4] == "txt ": # redirects commands to render
-        send("txt", ui.removeprefix("txt "))
+        client.send("txt", ui.removeprefix("txt "))
         print("[+] text redirected")
     else:
         print("[x] Error: Command not found")

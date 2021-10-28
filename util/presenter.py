@@ -1,6 +1,7 @@
 import os
 import pygame
 from util.helper import *
+from threading import Thread
 
 def resolution():
     f = open(os.path.join('config', 'resolution.dat'))
@@ -21,8 +22,7 @@ class Window:
 
     def __init__(self, name = "PyPresenter"):
         # get resolution from function resolution()
-        self.Width = resolution()[0]
-        self.Height = resolution()[1]
+        (self.Width, self.Height) = resolution()
         self.name = name
         self.backgroundLocation = os.path.join("Assets", "Background", "back.jpg")
 
@@ -35,15 +35,14 @@ class Window:
         pygame.display.toggle_fullscreen
         pygame.display.set_caption(name)
 
+        # rendering
+        self.Fps = 60
+
     def changeBackground(self):
         self.Background = pygame.transform.scale(pygame.image.load(self.backgroundLocation), (self.Width, self.Height))
 
     def changeBackgroundLocation(self, location):
         self.backgroundLocation = os.path.join("Assets", "Background", location)
-
-        # init basicly:
-        # window = presenter.Window()
-        # changeBackground()
 
 
     def update(self, text): # not updated, needs changes for different templates
@@ -51,4 +50,26 @@ class Window:
         line = self.NormalFont.render(text, 1, WHITE)
         self.Win.blit(line, (self.Width//2 - line.get_width()//2, self.Height//2 - line.get_height()//2))
 
-        pygame.display.update()
+
+    def gameLoop(self):
+        run = True
+        clock = pygame.time.Clock()
+
+        while run:
+            clock.tick(self.Fps)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+            
+            # update display ones per tick
+            pygame.display.update()
+        
+        pygame.quit()
+
+    def startGameLoop(self):
+        # start a thread
+        t = Thread(target=self.gameLoop,)
+        # make the thread daemon so it ends whenever the main thread ends
+        t.daemon = True
+        # start the thread
+        t.start()
