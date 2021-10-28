@@ -50,9 +50,15 @@ Width, Height = 900, 500
 
 Fps = 60
 
+# text stores value of current text on slide
+text = text1 = text2 = ""
+# mode is the mode of render, decides what layout the screen will have
+mode = 1
+
 # Font styles
 pygame.font.init()
 NormalFont = pygame.font.SysFont('comicsans', 100)
+smallFont = pygame.font.SysFont('comicsans', 70)
 
 
 screen = pygame.display.set_mode((Width, Height))
@@ -63,17 +69,42 @@ clock = pygame.time.Clock()
 Background = pygame.transform.scale(pygame.image.load("assets/back.png"), (Width, Height))
 
 
+# the part of actually bliting and updating the display
+# is moved to a function to make it easier to switch modes
+def render():
+    # this functions gets different modes to decide what to project
+    if mode == 0: pass #display nothing if mode is 0
+    elif mode == 1: # one line mode
+        global text
+        screen.blit(Background, (0,0))
+        line = NormalFont.render(text, 1, WHITE)
+        screen.blit(line, (Width//2 - line.get_width()//2, Height//2 - line.get_height()//2))
+    elif mode == 2: # two line mode
+        distanz = 50
+        global text1, text2
+        screen.blit(Background, (0,0))
+        line1 = NormalFont.render(text1, 1, WHITE)
+        line2 = smallFont.render(text2, 1, WHITE) 
+        screen.blit(line1, (Width//2 - line1.get_width()//2, Height//2 - distanz//2 - line1.get_height()//2))
+        screen.blit(line2, (Width//2 - line2.get_width()//2, Height//2 + distanz//2 - line2.get_height()//2))
+    
+
+
 run = True
 while run:
     clock.tick(60)
-    screen.blit(Background, (0,0))
+    render()
     if message[:4] == "txt:":
         text = message[4:]
-        line = NormalFont.render(text, 1, WHITE)
-        screen.blit(line, (Width//2 - line.get_width()//2, Height//2 - line.get_height()//2))
+        mode = 1
     if message[:4] == "cmd:":
-        text = message[4:]
-        if text == "stop": exit()
+        cmd = message[4:]
+        if cmd == "stop": exit()
+        if cmd[:5] == "mode:": mode == int(cmd[5:])
+    if message[:4] == "tra:":
+        text1 = message[4:]
+        text2 = message[4:]
+        mode = 2
 
 
 
