@@ -19,6 +19,7 @@ The features from PyPresenter need to be implemented in this version
   - remove prefix
 - make interface for operator better than the previous one
   - gui?
+      - which gui? (browser based with angluar, wpf with c# or some framework for Python)
   - slide mode
   - image mode
   - video?
