@@ -1,0 +1,23 @@
+{
+    "Network":
+        {
+            "SERVER_HOST": "127.0.0.1",
+            "SERVER_PORT": 1234
+        },
+    "Screen":
+    {
+        "Resolution":
+            {
+                "Width": 900,
+                "Heigth": 500
+            }
+    },
+    "Background":
+    {
+        "imgLocation": "assets/back.png"
+    },
+    "Slide":
+    {
+        
+    }
+}

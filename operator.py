@@ -1,3 +1,4 @@
+import json
 import socket
 from threading import Thread
 
@@ -29,7 +30,11 @@ t.start()
 
 while True:
     # input message we want to send to the server
-    s.send(input().encode())
+    input()
+    f = open("operatorSlide.json", "r")
+    data = f.read()
+    f.close()
+    s.send(data.encode())
 
 # close the socket
 s.close()

@@ -1,0 +1,21 @@
+{
+    "Slide":
+    {
+        "objects":
+        [
+            {
+                "startPosition": [100, 100],
+                "size": [700, 100],
+                "type": "txt",
+                "backgroundcolor": null,
+                "txtcolor": [255, 255, 255],
+                "txt": "This is cool",
+                "font": null
+            }
+        ]
+    },
+    "Background":
+    {
+        "imglocation": "assets/back.png"
+    }
+}
