@@ -11,6 +11,9 @@ f.close()
 
 data = json.loads(data)
 
+mode = ""
+imglocation = "assets/black.png"
+
 # socket
 # server's IP address
 # if the server is not on this machine, 
@@ -29,7 +32,19 @@ def listen_for_messages():
     global slide
     while True:
         message = s.recv(1024).decode()
-        slide = json.loads(message)
+
+        if message == "mode:img": global mode; mode = "img"
+        elif message == "mode:slide": mode = "slide"
+
+        elif message == "stop": exit()
+        
+        elif mode == "img":
+            global imglocation
+            imglocation = message
+            
+        else: slide = json.loads(message)
+
+
 
 # make a thread that listens for messages to this client & print them
 t = Thread(target=listen_for_messages)
@@ -70,15 +85,23 @@ clock = pygame.time.Clock()
 # the part of actually bliting and updating the display
 # is moved to a function to make it easier to switch modes
 def render():
-        # background layer
-        Background = pygame.transform.scale(pygame.image.load(data['Background']['imgLocation']), (Width, Height))
-        screen.blit(Background, (0,0))
-        # slide layer
-        try:
-            for object in slide['Slide']['objects']:
-                line = NormalFont.render(object['txt'], 1, object['txtcolor'])
-                screen.blit(line, (Width//2 - line.get_width()//2, Height//2 - line.get_height()//2))
-        except: pass
+        if mode == "img":
+            global imglocation
+            try:
+                Background = pygame.transform.scale(pygame.image.load(imglocation), (Width, Height))
+            except: pass
+            screen.blit(Background, (0,0))
+        else:
+        
+            # background layer
+            Background = pygame.transform.scale(pygame.image.load(data['Background']['imgLocation']), (Width, Height))
+            screen.blit(Background, (0,0))
+            # slide layer
+            try:
+                for object in slide['Slide']['objects']:
+                    line = NormalFont.render(object['txt'], 1, object['txtcolor'])
+                    screen.blit(line, (Width//2 - line.get_width()//2, Height//2 - line.get_height()//2))
+            except: pass
 
 run = True
 while run:
