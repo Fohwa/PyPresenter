@@ -2,7 +2,8 @@ import socket
 from threading import Thread
 import json
 from pynput.keyboard import Key, Listener
-import logging
+from os import listdir
+from os.path import isfile, join
 
 
 
@@ -95,15 +96,23 @@ def send(text):
     sc.send(text.encode())
 
 def img():
-        global i
-        i = 0
+        global i, z
+        i = z = 0
+
+        files = [f for f in listdir("assets")]
+
+
         def on_press(key):
-            global i
-            global run
-            if str(key) == "Key.right" and i <  17: i += 1; send(f"img:assets/imgmode/{i}.jpg")
-            if str(key) == "Key.left": i -= 1 and i != 0 and i != 1; send(f"img:assets/imgmode/{i}.jpg")
+            global i, z
+
+# switch slides
+            if str(key) == "Key.right" and i < len([f for f in listdir(f"assets/{files[z]}")]): i += 1; send(f"img:assets/{files[z]}/{i}.jpg")
+            if str(key) == "Key.left": i -= 1 and i != 0 and i != 1; send(f"img:assets/{files[z]}/{i}.jpg")
+# switch directories
+            if str(key) == "Key.up" and z != 0: i = 0; z -= 1; print(files[z])
+            if str(key) == "Key.down" and z < len(files): i = 0; z += 1; print(files[z])
+# stop img mode
             if str(key) == "Key.esc": listener.stop(); return; exit()
-            print(key)
 
         with Listener(on_press=on_press) as listener:
             listener.join()

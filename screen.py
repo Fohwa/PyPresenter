@@ -11,7 +11,7 @@ f.close()
 
 data = json.loads(data)
 
-imglocation = "assets/black.png"
+imglocation = "assets/test/black.png"
 txt = ""
 
 # socket
