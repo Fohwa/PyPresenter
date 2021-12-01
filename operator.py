@@ -95,20 +95,16 @@ def send(text):
     sc.send(text.encode())
 
 def img():
-    send("mode:img")
-    global i
-    i = 0
-
-    def on_press(key):
         global i
-        if str(key) == "Key.right" and i <  17: i += 1; send(f"assets/imgmode/{i}.jpg")
-        if str(key) == "Key.left": i -= 1 and i != 0 and i != 1; send(f"assets/imgmode/{i}.jpg")
-        if str(key) == "Key.esc": send("assets/black.png"); run = False; return
-        print(key)
+        i = 0
+        def on_press(key):
+            global i
+            global run
+            if str(key) == "Key.right" and i <  17: i += 1; send(f"img:assets/imgmode/{i}.jpg")
+            if str(key) == "Key.left": i -= 1 and i != 0 and i != 1; send(f"img:assets/imgmode/{i}.jpg")
+            if str(key) == "Key.esc": listener.stop(); return; exit()
+            print(key)
 
-
-    run = True
-    while run:
         with Listener(on_press=on_press) as listener:
             listener.join()
 
@@ -121,7 +117,9 @@ while True:
     # input message we want to send to the server
     cmd = input("@ ")
     if cmd == "img": img()
-    if cmd == "stop": send("stop"); exit()
+    else:
+        send("txt:" + cmd)
+    
     
 
 # close client sockets

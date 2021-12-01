@@ -11,8 +11,8 @@ f.close()
 
 data = json.loads(data)
 
-mode = ""
 imglocation = "assets/black.png"
+txt = ""
 
 # socket
 # server's IP address
@@ -29,20 +29,23 @@ s.connect((SERVER_HOST, SERVER_PORT))
 print("[+] Connected.")
 
 def listen_for_messages():
-    global slide
     while True:
         message = s.recv(1024).decode()
+        print(message)
 
-        if message == "mode:img": global mode; mode = "img"
-        elif message == "mode:slide": mode = "slide"
-
-        elif message == "stop": exit()
+        if message == "stop": exit()
         
-        elif mode == "img":
+        elif message[:4] == "img:":
+            print("imgmode")
             global imglocation
-            imglocation = message
+            imglocation = message[4:]
+        elif message[:4] == "txt:":
+            print("textmode")
+            global txt
+            txt = message[4:]
             
-        else: slide = json.loads(message)
+        else: #slide = json.loads(message)
+            pass
 
 
 
@@ -85,23 +88,17 @@ clock = pygame.time.Clock()
 # the part of actually bliting and updating the display
 # is moved to a function to make it easier to switch modes
 def render():
-        if mode == "img":
-            global imglocation
-            try:
-                Background = pygame.transform.scale(pygame.image.load(imglocation), (Width, Height))
-            except: pass
-            screen.blit(Background, (0,0))
-        else:
-        
-            # background layer
-            Background = pygame.transform.scale(pygame.image.load(data['Background']['imgLocation']), (Width, Height))
-            screen.blit(Background, (0,0))
-            # slide layer
-            try:
-                for object in slide['Slide']['objects']:
-                    line = NormalFont.render(object['txt'], 1, object['txtcolor'])
-                    screen.blit(line, (Width//2 - line.get_width()//2, Height//2 - line.get_height()//2))
-            except: pass
+    # background layer (img layer)   
+    global imglocation
+    try:
+        Background = pygame.transform.scale(pygame.image.load(imglocation), (Width, Height))
+    except: pass
+    screen.blit(Background, (0,0))
+
+
+    # slide layer (txt layer)
+    line = NormalFont.render(txt, 1, [255, 255, 255])
+    screen.blit(line, (Width//2 - line.get_width()//2, Height//2 - line.get_height()//2))
 
 run = True
 while run:
